@@ -1,0 +1,206 @@
+---
+title: "Survival Analysis Final Project"
+author: Group 10
+output: html_document
+---
+
+```{r message=FALSE, warning=FALSE}
+library(readr)
+library(tidyverse)
+library(janitor)
+library(ggcorrplot)
+```
+
+## Load the dataset and clean column names
+
+```{r}
+file_path <- "Breast Cancer METABRIC.csv"
+
+data <- read.csv(file_path, na.strings = "") %>%  # Treat blank strings as NA
+  clean_names() %>%
+  filter(cancer_type != "Breast Sarcoma") %>%  # only 3 patients are not Breast Cancer, exclude them
+  rename(
+     vital_status = patient_s_vital_status,
+     three_gene_classifier_subtype = x3_gene_classifier_subtype
+  )
+
+# View the cleaned data
+head(data)
+```
+
+```{r}
+dim(data)            # number of rows and columns
+colnames(data)       # check all variable names
+```
+
+## Check for missing values:
+
+```{r}
+# Proportion and count of missing values per variable (only variables with missing values)
+missing_summary <- data %>%
+  summarise(across(everything(), ~ sum(is.na(.)))) %>%  # count missing values
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "missing_count"
+  ) %>%
+  mutate(
+    prop_missing = missing_count / nrow(data)  # calculate proportion of missing values
+  ) %>%
+  filter(missing_count > 0) %>%      # keep only variables with any missing values
+  arrange(desc(missing_count))       # sort by missing count (descending)
+
+missing_summary
+```
+
+```{r}
+# Plot missing values per variable (count)
+ggplot(missing_summary, aes(x = reorder(variable, missing_count), y = missing_count)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(
+    title = "Missing Values in Columns",
+    x = "Variable",
+    y = "Number of Missing Rows",
+    caption = "Data: METABRIC Breast Cancer Study"
+  ) +
+  theme_minimal() +
+  coord_flip()  # Flip the chart for better readability
+```
+
+## Define continuous and categorical variables manually:
+
+### Continuous variables:
+
+```{r}
+continuous_vars <- c(
+  "age_at_diagnosis",
+  "tumor_size",
+  "lymph_nodes_examined_positive",
+  "mutation_count",
+  "nottingham_prognostic_index",
+  "overall_survival_months",
+  "relapse_free_status_months"
+)
+
+continuous_vars
+```
+
+```{r warning=FALSE}
+# Histograms for all continuous variables
+data %>%
+  select(all_of(continuous_vars)) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "value"
+  ) %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 20) +
+  facet_wrap(~ variable, scales = "free_x") +
+  labs(
+    title = "Distributions of continuous variables",
+    x = "Value",
+    y = "Count"
+  )
+```
+
+### Categorical variables:
+
+```{r}
+# Treat other variables as categorical for EDA, but exclude patient_id
+categorical_vars <- setdiff(names(data), c(continuous_vars, "patient_id"))
+```
+
+```{r}
+# Frequency and proportion for each categorical variable
+for (var in categorical_vars) {
+  cat("\n\n==============================\n")
+  cat("Variable:", var, "\n")
+  
+  tmp <- data %>%
+    count(.data[[var]]) %>%                 # count each level
+    mutate(prop = n / sum(n)) %>%           # proportion within the variable
+    arrange(desc(n))                        # sort by frequency
+  
+  print(tmp)                 # print all rows for this variable
+}
+```
+
+sex and cancer_type have only a single category (Female and Breast Cancer) in this dataset, making them uninformative for the survival analysis model, as they do not provide any variation in the data.
+
+```{r}
+# Remove 'sex' and 'cancer_type' from categorical_vars
+categorical_vars <- setdiff(categorical_vars, c("sex", "cancer_type"))
+
+# Print updated categorical_vars
+categorical_vars
+```
+
+## Correlation analysis:
+
+```{r}
+# Calculate correlation matrix for continuous variables
+cor_matrix <- data %>%
+  select(all_of(continuous_vars)) %>%
+  cor(use = "pairwise.complete.obs")  # handle NA values by pairwise complete observation
+
+ggcorrplot(cor_matrix, 
+           type = "upper",        # Show only the lower triangle of the matrix
+           lab = TRUE,            # Display correlation values
+           colors = c("blue", "white", "red"),  # Color gradient
+           title = "Correlation Matrix of Continuous Variables")
+```
+
+Based on the correlation matrix shown, relapse_free_status_months and overall_survival_months exhibit a very strong positive correlation of 0.9, indicating that these two variables are highly related. However, other continuous variables, such as nottingham_prognostic_index, mutation_count, lymph_nodes_examined_positive, and tumor_size, do not show high correlations with each other.
+
+If we are conducting survival analysis with overall_survival_status as the event indicator, we should exclude relapse_free_status_months as a predictor in the model, as it is strongly correlated with overall_survival_months. Including both would lead to multicollinearity, where these two variables would essentially provide redundant information, making it difficult to assess their independent effects on survival. Therefore, we should choose overall_survival_months as the time variable, as it directly represents the total survival time and includes all relevant information related to the occurrence of the event.
+
+```{r warning=FALSE}
+# Create an empty data frame to store results
+chi_results <- data.frame(
+  variable = character(),
+  p_value = numeric(),
+  stringsAsFactors = FALSE
+)
+
+# Perform Chi-Square Test for each categorical variable with overall_survival_status
+for (var in categorical_vars) {
+  # Skip chi-square test for overall_survival_status
+  if (var == "overall_survival_status") {
+    next
+  }
+  
+  # Create a contingency table for each variable and survival status
+  contingency_table <- table(data[[var]], data$overall_survival_status)
+  
+  # Perform Chi-Square test
+  chi_test <- chisq.test(contingency_table)
+  
+  # Store the results in chi_results dataframe
+  chi_results <- rbind(chi_results, data.frame(variable = var, p_value = chi_test$p.value))
+  
+  # Print the contingency table and the p-value
+  cat("\n\n==============================\n")
+  cat("Variable:", var, "\n")
+  print(contingency_table)
+  cat("P-value for Chi-Square Test:", chi_test$p.value, "\n")
+}
+
+# Print the final results with p-values for all variables except overall_survival_status
+chi_results
+```
+
+Since "vital_status" variable is already directly related to the outcome of survival and is a proxy for the status of the patient, it is unnecessary to include it in the model. This variable is highly correlated with survival, and adding it could lead to perfect prediction of the outcome or multicollinearity.
+
+The "cohort" variable represents different patient groups, but upon examining the Chi-square results, it appears that many of the cohort categories have zero counts for either "Deceased" or "Living" groups (e.g., cohort 6, 7, 8, and 9), which indicates empty or sparse categories. Including these sparsely populated categories in the model would likely introduce noise, distort the model, and decrease the reliability of predictions.
+
+```{r}
+# Filter results to only show variables with p-value < 0.05
+significant_vars <- chi_results %>%
+  filter(p_value < 0.05)
+
+# Print the significant variables
+significant_vars
+```
+
+
