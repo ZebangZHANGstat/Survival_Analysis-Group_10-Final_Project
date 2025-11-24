@@ -11,7 +11,9 @@ library(janitor)
 library(ggcorrplot)
 ```
 
-## Load the dataset and clean column names
+## EDA
+
+### Load the dataset and clean column names
 
 ```{r}
 file_path <- "Breast Cancer METABRIC.csv"
@@ -20,20 +22,60 @@ data <- read.csv(file_path, na.strings = "") %>%  # Treat blank strings as NA
   clean_names() %>%
   filter(cancer_type != "Breast Sarcoma") %>%  # only 3 patients are not Breast Cancer, exclude them
   rename(
-     vital_status = patient_s_vital_status,
-     three_gene_classifier_subtype = x3_gene_classifier_subtype
-  )
+    vital_status = patient_s_vital_status,
+    three_gene_classifier_subtype = x3_gene_classifier_subtype
+  ) %>%
+  # Exclude patients with both overall_survival_months and overall_survival_status missing
+  filter(!(is.na(overall_survival_months) & is.na(overall_survival_status)))
 
 # View the cleaned data
 head(data)
 ```
+
+Our primary objective in this project is to investigate factors associated with overall survival (OS) in the METABRIC breast cancer cohort. Specifically, we define overall survival as the time from diagnosis to death from any cause, with overall_survival_months providing the follow-up time and overall_survival_status indicating whether the death event occurred.
+
+For the survival analysis, both a valid survival time and an event indicator are required for each patient. In this dataset, some patients have overall_survival_months and overall_survival_status missing simultaneously, meaning that no follow-up or outcome information is available for these individuals. These cases are not censored observations but instead represent completely missing survival data. Therefore, we excluded patients with both overall_survival_months and overall_survival_status missing, so that the analysis dataset contains only patients with interpretable OS information for time-to-event modelling.
 
 ```{r}
 dim(data)            # number of rows and columns
 colnames(data)       # check all variable names
 ```
 
-## Check for missing values:
+### Visualization of Overall Survival (OS)
+
+```{r warning=FALSE}
+ggplot(data, aes(x = overall_survival_months)) +
+geom_histogram(bins = 20, color = "black", fill = "skyblue") +
+labs(
+title = "Distribution of Overall Survival Time",
+x = "Overall survival time (months)",
+y = "Count"
+) +
+theme_minimal()
+```
+
+```{r warning=FALSE}
+ggplot(data, aes(x = factor(overall_survival_status))) +
+  geom_bar(aes(y = ..count..), fill = "skyblue", color = "black") +  # Count bars
+  geom_text(
+    stat = "count",
+    aes(label = paste0(..count.., " (", round(..count.. / sum(..count..) * 100, 1), "%)")),
+    vjust = -0.3,      # move labels slightly above the bar
+    color = "black",
+    size = 4
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.1))  # add 10% headroom on top so labels are fully visible
+  ) +
+  labs(
+    title = "Distribution of Overall Survival Status",
+    x = "Overall Survival Status",
+    y = "Count"
+  ) +
+  theme_minimal()
+```
+
+### Check for missing values:
 
 ```{r}
 # Proportion and count of missing values per variable (only variables with missing values)
@@ -46,8 +88,7 @@ missing_summary <- data %>%
   ) %>%
   mutate(
     prop_missing = missing_count / nrow(data)  # calculate proportion of missing values
-  ) %>%
-  filter(missing_count > 0) %>%      # keep only variables with any missing values
+  ) %>%     # keep only variables with any missing values
   arrange(desc(missing_count))       # sort by missing count (descending)
 
 missing_summary
@@ -67,9 +108,9 @@ ggplot(missing_summary, aes(x = reorder(variable, missing_count), y = missing_co
   coord_flip()  # Flip the chart for better readability
 ```
 
-## Define continuous and categorical variables manually:
+### Define continuous and categorical variables manually:
 
-### Continuous variables:
+#### Continuous variables:
 
 ```{r}
 continuous_vars <- c(
@@ -88,7 +129,7 @@ continuous_vars
 ```{r warning=FALSE}
 # Histograms for all continuous variables
 data %>%
-  select(all_of(continuous_vars)) %>%
+  select(all_of(setdiff(continuous_vars, "overall_survival_months"))) %>%
   pivot_longer(
     cols = everything(),
     names_to = "variable",
@@ -104,7 +145,7 @@ data %>%
   )
 ```
 
-### Categorical variables:
+#### Categorical variables:
 
 ```{r}
 # Treat other variables as categorical for EDA, but exclude patient_id
@@ -112,8 +153,8 @@ categorical_vars <- setdiff(names(data), c(continuous_vars, "patient_id"))
 ```
 
 ```{r}
-# Frequency and proportion for each categorical variable
-for (var in categorical_vars) {
+# Frequency and proportion for each categorical variable (excluding overall_survival_status)
+for (var in setdiff(categorical_vars, "overall_survival_status")) {
   cat("\n\n==============================\n")
   cat("Variable:", var, "\n")
   
@@ -123,7 +164,7 @@ for (var in categorical_vars) {
     arrange(desc(n))                        # sort by frequency
   
   print(tmp)                 # print all rows for this variable
-}
+}  
 ```
 
 sex and cancer_type have only a single category (Female and Breast Cancer) in this dataset, making them uninformative for the survival analysis model, as they do not provide any variation in the data.
@@ -136,9 +177,9 @@ categorical_vars <- setdiff(categorical_vars, c("sex", "cancer_type"))
 categorical_vars
 ```
 
-## Correlation analysis:
+### Correlation analysis:
 
-```{r}
+```{r warning=FALSE}
 # Calculate correlation matrix for continuous variables
 cor_matrix <- data %>%
   select(all_of(continuous_vars)) %>%
@@ -155,6 +196,11 @@ Based on the correlation matrix shown, relapse_free_status_months and overall_su
 
 If we are conducting survival analysis with overall_survival_status as the event indicator, we should exclude relapse_free_status_months as a predictor in the model, as it is strongly correlated with overall_survival_months. Including both would lead to multicollinearity, where these two variables would essentially provide redundant information, making it difficult to assess their independent effects on survival. Therefore, we should choose overall_survival_months as the time variable, as it directly represents the total survival time and includes all relevant information related to the occurrence of the event.
 
+```{r}
+# Remove 'relapse_free_status_months' from continuous_vars
+continuous_vars <- setdiff(continuous_vars, "relapse_free_status_months")
+```
+
 ```{r warning=FALSE}
 # Create an empty data frame to store results
 chi_results <- data.frame(
@@ -165,10 +211,6 @@ chi_results <- data.frame(
 
 # Perform Chi-Square Test for each categorical variable with overall_survival_status
 for (var in categorical_vars) {
-  # Skip chi-square test for overall_survival_status
-  if (var == "overall_survival_status") {
-    next
-  }
   
   # Create a contingency table for each variable and survival status
   contingency_table <- table(data[[var]], data$overall_survival_status)
@@ -192,15 +234,34 @@ chi_results
 
 Since "vital_status" variable is already directly related to the outcome of survival and is a proxy for the status of the patient, it is unnecessary to include it in the model. This variable is highly correlated with survival, and adding it could lead to perfect prediction of the outcome or multicollinearity.
 
-The "cohort" variable represents different patient groups, but upon examining the Chi-square results, it appears that many of the cohort categories have zero counts for either "Deceased" or "Living" groups (e.g., cohort 6, 7, 8, and 9), which indicates empty or sparse categories. Including these sparsely populated categories in the model would likely introduce noise, distort the model, and decrease the reliability of predictions.
+Although the chi-square test showed a statistically significant association between "cohort" and overall survival status, we decided not to include "cohort" as a covariate in the survival model. In this dataset, "cohort" primarily reflects study batch or recruitment group rather than a meaningful clinical or biological characteristic of the patients. Therefore, it is better interpreted as a design-related or administrative label, rather than a true risk factor for overall survival.
+
+Although "relapse_free_status" shows a highly significant association with overall survival status in the chi-square test, we chose not to include it as a covariate in the overall survival model. Clinically, relapse is an intermediate outcome that occurs after baseline and lies on the causal pathway between baseline risk factors and death. Treating relapse status as a predictor of overall survival would therefore introduce information leakage and could distort the estimated effects of true baseline covariates. In addition, "relapse_free_status" is closely related to "relapse_free_status_months", which we already excluded as an alternative time-to-event endpoint.
 
 ```{r}
-# Filter results to only show variables with p-value < 0.05
+# Filter results to only show variables with p-value < 0.05 and exclude 'vital_status' and 'cohort'
 significant_vars <- chi_results %>%
-  filter(p_value < 0.05)
+  filter(p_value < 0.05) %>%
+  filter(!variable %in% c("vital_status","cohort","relapse_free_status"))
 
 # Print the significant variables
 significant_vars
 ```
 
+### Final dataset after variable selection
+
+```{r}
+# Extract significant variables' names from significant_vars (filter for p-value < 0.05)
+significant_var_names <- significant_vars$variable
+
+# Filter the data by including only the selected variables from both significant_vars and continuous_vars
+selected_vars <- c(significant_var_names, continuous_vars)
+
+# Create a new dataset with only the selected variables
+filtered_data <- data %>%
+  select(all_of(selected_vars))
+
+# View the filtered dataset
+head(filtered_data)
+```
 
