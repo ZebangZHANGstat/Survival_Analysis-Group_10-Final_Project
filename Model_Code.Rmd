@@ -1,0 +1,176 @@
+---
+title: "Model_Code"
+output: html_document
+---
+
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tidyr)
+library(readr)
+library(MASS)
+library(survival)
+```
+ 
+```{r message=FALSE, warning=TRUE}
+data= read_csv("Breast Cancer METABRIC.csv") |>
+  janitor::clean_names() |>
+  filter(cancer_type != "Breast Sarcoma") |> # only 3 patients are not Breast Cancer, exclude them
+  rename(
+     vital_status = patients_vital_status,
+     three_gene_classifier_subtype = x3_gene_classifier_subtype
+  )|> 
+  mutate(cellularity = factor(cellularity, levels = c("Low","Medium","High")),
+         chemotherapy = factor(chemotherapy, levels = c("No","Yes")),
+         overall_survival_status = ifelse(overall_survival_status=="Living", 0, 1)
+         )
+```
+
+
+
+# Model building 
+
+## Stepwise variable selection 
+
+Do we want to consider any interaction terms? time variant variables?
+
+Based on EDA, we will exclude relapse free time and vital status since it was highly correlated with the outcome. It will also exclude sex and type of cancer since this data only include female breast cancer patients. 
+
+Will see if backward selection retains cohort.
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#complete data
+data1= data[complete.cases(data),]
+
+full_model = coxph( Surv(overall_survival_months, overall_survival_status) ~ 
+    age_at_diagnosis + type_of_breast_surgery + 
+    cancer_type_detailed +  cellularity +   chemotherapy +   pam50_claudin_low_subtype + cohort
+    + er_status_measured_by_ihc + er_status +  neoplasm_histologic_grade +
+    her2_status_measured_by_snp6 + her2_status +   tumor_other_histologic_subtype +
+    hormone_therapy + inferred_menopausal_state +  integrative_cluster +
+    primary_tumor_laterality + lymph_nodes_examined_positive +
+    mutation_count + nottingham_prognostic_index +  oncotree_code + pr_status +
+    radio_therapy +   three_gene_classifier_subtype + tumor_size +  tumor_stage,
+    data= data1)
+
+backward_model = step(full_model, direction = "backward")    
+summary(backward_model)
+```
+
+```{r message=TRUE, warning=TRUE, include=FALSE}
+model.1= coxph(Surv(overall_survival_months, overall_survival_status ) ~ age_at_diagnosis + her2_status + hormone_therapy + inferred_menopausal_state + primary_tumor_laterality + lymph_nodes_examined_positive + nottingham_prognostic_index + radio_therapy + tumor_size , 
+               data=data)
+
+forward_model = stepAIC(model.1, direction = "forward")
+```
+
+
+```{r} 
+full_inter_mod= coxph(Surv(overall_survival_months, overall_survival_status ) ~   
+                        age_at_diagnosis + her2_status + hormone_therapy + 
+                        inferred_menopausal_state + primary_tumor_laterality +
+                        lymph_nodes_examined_positive + nottingham_prognostic_index +
+                        radio_therapy + tumor_size + 
+                        tumor_size:hormone_therapy + age_at_diagnosis:radio_therapy , 
+                      data=data1) 
+
+final_inter_mod= step(full_inter_mod, direction = "backward")
+```
+ 
+
+
+Check the diagnotic plots from class and test them here. age, her2 status, infered+menopausal_state and horomone_therapy:turmo_size may violate PH assumption
+
+# Model Diagnostic Plots 
+
+### Residual Plots
+```{r} 
+#Martingale Residuals 
+res_mart= residuals(final_inter_mod, type = "martingale")
+vars =  c("age_at_diagnosis",
+          "lymph_nodes_examined_positive",
+          "nottingham_prognostic_index", "tumor_size")
+pred_lp = predict(final_inter_mod, type = "lp")
+
+ plot(
+  pred_lp, res_mart,
+  xlab = "Predicted Linear Predictor",
+  ylab = "Martingale Residuals",
+  main = "Martingale Residuals vs Linear Predictor"
+)
+abline(h = 0, col = "red")
+  
+
+par(mfrow = c(2,2))
+
+for (v in vars) {
+  plot(
+    data1[[v]], res_mart,
+    xlab = v,
+    ylab = "Martingale Residuals",
+    main = paste("Martingale Residuals vs", v)
+  )
+  abline(h = 0, col = "red")
+  lines(lowess(data1[[v]], res_mart), lwd = 2)
+}
+ 
+
+```
+
+The Martingale residuals vs. predicted values appear to violate the linearity assumption. The individual plots show there is information which is not caotured by the model which needs to be addressed. Example: The larger notingham prognostic index the larger the residuals. 
+
+```{r}
+#Deviance residuals 
+
+res_dev= residuals(final_inter_mod, type = "deviance")
+par(mfrow = c(1,2))
+
+plot(
+  pred_lp, res_dev,
+  xlab = "Predicted Linear Predictor",
+  ylab = "Deviance Residuals",
+  main = "Deviance Residuals vs Linear Predictor"
+)
+abline(h = 0, col = "red")
+par(mfrow = c(1,1))
+
+
+par(mfrow = c(2,2))
+for (v in vars) {
+  plot(
+    data1[[v]], res_dev,
+    xlab = v,
+    ylab = "Deviance Residuals",
+    main = paste("Deviance Residuals vs", v)
+  )
+  abline(h = 0, col = "red")
+  lines(lowess(data1[[v]], res_dev), lwd = 2)
+}
+```
+
+The deviance residual plots show indication of non-constant covariates as shown in the Martingale residual plots.
+
+
+```{r}
+# Schoenfeld residuals 
+
+cox.zph(final_inter_mod)
+
+par(mfrow = c(2,2))
+plot(cox.zph(final_inter_mod))+
+  abline(h = 0, col = "red")
+```
+
+The weighted Schoenfeld Residuals show some covariates vary by time which confirms there lacks proportionality across time. 
+
+
+
+
+
+## Time varying covariates 
+
+(Do we also want to consider peicewise cox model? or other paramteric survival models using expo~?)
+
+### Re-check model fit
+
+(Comparison with km estimates, cumulative hazard vs time plots, AIC comparison)
