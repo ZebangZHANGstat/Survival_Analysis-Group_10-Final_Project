@@ -265,3 +265,46 @@ filtered_data <- data %>%
 head(filtered_data)
 ```
 
+### Overview of demographic and baseline variables
+
+```{r}
+#install.packages("gtsummary")
+library(gtsummary)
+
+vars_for_table1 <- c(
+  "age_at_diagnosis",
+  "tumor_size",
+  "lymph_nodes_examined_positive",
+  "mutation_count",
+  "nottingham_prognostic_index",
+  "type_of_breast_surgery",
+  "cancer_type_detailed",
+  "pam50_claudin_low_subtype",
+  "neoplasm_histologic_grade",
+  "tumor_other_histologic_subtype",
+  "inferred_menopausal_state",
+  "integrative_cluster",
+  "radio_therapy",
+  "three_gene_classifier_subtype",
+  "tumor_stage"
+)
+
+table1 <-
+  filtered_data |>
+  dplyr::select(all_of(c("overall_survival_status", vars_for_table1))) |>
+  tbl_summary(
+    by = overall_survival_status,                
+    type = list(all_continuous() ~ "continuous2"),
+    statistic = list(
+      all_continuous()  ~ "{mean} ({sd})",       
+      all_categorical() ~ "{n} ({p}%)"           
+    ),
+    missing = "ifany"                           
+  ) |>
+  add_n() |>
+  add_p() |>
+  modify_caption("**Table 1. Baseline characteristics by overall survival status**") |>
+  bold_labels()
+
+table1
+```
