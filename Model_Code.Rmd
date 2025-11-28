@@ -12,7 +12,8 @@ library(MASS)
 library(survival)
 ```
  
-```{r message=FALSE, warning=TRUE}
+```{r message=FALSE, warning=TRUE} 
+
 data= read_csv("Breast Cancer METABRIC.csv") |>
   janitor::clean_names() |>
   filter(cancer_type != "Breast Sarcoma") |> # only 3 patients are not Breast Cancer, exclude them
@@ -22,7 +23,18 @@ data= read_csv("Breast Cancer METABRIC.csv") |>
   )|> 
   mutate(cellularity = factor(cellularity, levels = c("Low","Medium","High")),
          chemotherapy = factor(chemotherapy, levels = c("No","Yes")),
-         overall_survival_status = ifelse(overall_survival_status=="Living", 0, 1)
+         overall_survival_status = ifelse(overall_survival_status=="Living", 0, 1), 
+         her2_status= factor( her2_status, levels = c("Negative","Positive"),
+                             labels = c("Negative","Positive")), 
+         hormone_therapy = factor(hormone_therapy, levels = c("No","Yes"),
+                                  labels = c("No","Yes")),
+         inferred_menopausal_state= factor(inferred_menopausal_state,
+                                           levels = c("Pre", "Post"), labels = c("Pre","Post")), 
+         primary_tumor_laterality= factor(primary_tumor_laterality,
+                                          levels = c("Left","Right"), labels = c("Left","Right")),
+         radio_therapy = factor(radio_therapy,
+                                levels=c("No","Yes"),  labels = c("No","Yes"))
+         
          )
 ```
 
@@ -162,15 +174,146 @@ plot(cox.zph(final_inter_mod))+
 ```
 
 The weighted Schoenfeld Residuals show some covariates vary by time which confirms there lacks proportionality across time. 
+ 
+
+
+The weighted Schoenfeld Residuals show some covariates vary by time which confirms there lacks proportionality across time. 
 
 
 
 
-
-## Time varying covariates 
+# Addressing PH assumption Violations
 
 (Do we also want to consider peicewise cox model? or other paramteric survival models using expo~?)
+
+### Stratification
+
+```{r}
+strat_mod = coxph(Surv(overall_survival_months, overall_survival_status ) ~   
+                        age_at_diagnosis + her2_status + strata(hormone_therapy) + 
+                        inferred_menopausal_state + primary_tumor_laterality +
+                        lymph_nodes_examined_positive + nottingham_prognostic_index +
+                        radio_therapy + tumor_size + 
+                        tumor_size:hormone_therapy + age_at_diagnosis:radio_therapy +
+                     age_at_diagnosis:her2_status:lymph_nodes_examined_positive, 
+                      data=data1) 
+summary(strat_mod) 
+```
+
+Stratification did not address the violations to PH assumptions, so will now consider time varying coeffcients. 
+
+
+
+### Time varying covariate coefficient
+
+Checking time variant coefficients for continuous predictors with violations:
+
+- age  
+- inferred_menoposaul_state
+- nottingham_prognostic_index
+- hormone_therapy::tumor_size
+
+```{r}
+tmv_mod =coxph(
+  Surv(overall_survival_months, overall_survival_status) ~  age_at_diagnosis + 
+    her2_status +  hormone_therapy + inferred_menopausal_state +
+    primary_tumor_laterality +   lymph_nodes_examined_positive +  nottingham_prognostic_index +
+    radio_therapy + tumor_size +   tumor_size:hormone_therapy + age_at_diagnosis:radio_therapy +
+    age_at_diagnosis:her2_status:lymph_nodes_examined_positive +
+    tt(age_at_diagnosis) + tt(lymph_nodes_examined_positive) + tt(nottingham_prognostic_index),
+  data = data1, 
+  tt = function(x, t, ...) {
+    x * log(t) })
+
+summary(tmv_mod)
+```
+
+```{r}
+AIC(final_inter_mod)
+AIC(tmv_mod)
+```
+
+The time varying coefficient model did lower AIC suggesting slight improvement in the model. 
+
+#### Re-check residuals 
+
+```{r}
+ #  Martingale Residuals 
+res_mart= residuals(tmv_mod, type = "martingale")
+
+vars = c("age_at_diagnosis",
+          "lymph_nodes_examined_positive",
+          "nottingham_prognostic_index",
+          "tumor_size")
+ 
+pred_lp=  predict(tmv_mod, type = "lp")
+
+# Residuals vs LP
+plot( pred_lp, res_mart,
+  xlab = "Predicted Linear Predictor",
+  ylab = "Martingale Residuals",
+  main = "Martingale Residuals vs Linear Predictor (Time-Varying Model)")
+abline(h = 0, col = "red")
+
+# Residuals vs Covariates
+par(mfrow = c(2,2))
+for (v in vars) {
+  plot(
+    model.frame(tmv_mod)[[v]], res_mart,
+    xlab = v,
+    ylab = "Martingale Residuals",
+    main = paste("Martingale Residuals vs", v, "(TVC Model)")
+  )
+  abline(h = 0, col = "red")
+  lines(lowess( model.frame(tmv_mod)[[v]], res_mart), lwd = 2)
+}
+par(mfrow = c(1,1))
+
+
+
+```
+
+The individual plots for predictors show all surrounding zero. The nottingham_prognostic_index may be tested with a spline to check if there is sig. non-linearity left. There are some very large tumor sizes while others are smaller, so we may want to redo process with log_tumor_size instead. Other than that there are no significant non-linear trends that we need to account for.
+
+**change tt(log(tumor_size)) it results in slightly small AIC maybe since it reduces the influence of large outlier tumor size**
+
+
+```{r}
+#Deviance residuals 
+res_dev= residuals(tmv_mod, type = "deviance")
+par(mfrow = c(1,2))
+ 
+
+plot( pred_lp, res_dev,
+  xlab = "Predicted Linear Predictor",
+  ylab = "Deviance Residuals",
+  main = "Deviance Residuals vs Linear Predictor" )
+abline(h = 0, col = "red")
+par(mfrow = c(1,1))
+
+
+par(mfrow = c(2,2))
+for (v in vars) {
+  plot(
+    model.frame(tmv_mod)[[v]], res_dev,
+    xlab = v,
+    ylab = "Deviance Residuals",
+    main = paste("Deviance Residuals vs", v)
+  )
+  abline(h = 0, col = "red")
+  lines(lowess(model.frame(tmv_mod)[[v]], res_dev), lwd = 2)
+}
+```
+The deviance plots show The residuals are mostly centered around zero, which indicates no  misfit of the overall model, but there are a few larger positive residuals.
+
+**Can also consider removing outliers to check if it changes significantly**
+
+**If this doesn't fix the issues then try AFT model or expo regression or weibull regression model**
+
+
 
 ### Re-check model fit
 
 (Comparison with km estimates, cumulative hazard vs time plots, AIC comparison)
+
+
