@@ -1,0 +1,166 @@
+---
+title: "Kaplan-Meier Plots"
+output: html_document
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(survival)
+library(survminer)
+library(ggsurvfit)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE)
+```
+
+```{r}
+data = read_csv("Breast Cancer METABRIC.csv") |>
+  janitor::clean_names()
+```
+
+Factoring variables
+
+```{r}
+data = 
+  data |>
+  filter(cancer_type != "Breast Sarcoma") |>
+  rename(
+     three_gene_classifier_subtype = x3_gene_classifier_subtype)|> 
+  mutate(
+    type_of_breast_surgery = 
+      factor(type_of_breast_surgery),
+    cellularity =
+      factor(
+        cellularity,
+        levels = c("Low", "Medium", "High")),
+    chemotherapy = 
+      factor(
+        chemotherapy,
+        levels = c("No","Yes")),
+    cohort = 
+      factor(cohort),
+    er_status_measured_by_ihc = 
+      factor(
+        er_status_measured_by_ihc,
+        levels = c("Negative", "Positve"),
+        labels = c("Negative", "Positive")),
+    er_status = 
+      factor(
+        er_status,
+        levels = c("Negative", "Positive")),
+    neoplasm_histologic_grade = 
+      factor(neoplasm_histologic_grade),
+    her2_status_measured_by_snp6 =
+      factor(
+        her2_status_measured_by_snp6,
+        levels = c("Loss", "Neutral", "Gain")),
+    her2_status = 
+      factor(
+        her2_status, 
+        levels = c("Negative", "Positive")),
+    hormone_therapy = 
+      factor(
+        hormone_therapy, 
+        levels = c("No", "Yes")),
+    inferred_menopausal_state = 
+      factor(
+        inferred_menopausal_state,
+        levels = c("Pre", "Post")),    
+    primary_tumor_laterality = 
+      factor(primary_tumor_laterality,
+      levels = c("Left", "Right")),
+    overall_survival_status = 
+      case_match(
+        overall_survival_status,
+        "Living" ~ 0,
+        "Deceased" ~ 1),
+    pr_status =
+      factor(
+        pr_status,
+        levels = c("Negative", "Positive")),
+    radio_therapy =
+      factor(
+        radio_therapy,
+        levels = c("No", "Yes")),
+    relapse_free_status =
+      case_match(
+        relapse_free_status,
+        "Not Recurred" ~ 0,
+        "Recurred" ~ 1),
+    three_gene_classifier_subtype =
+      factor(three_gene_classifier_subtype),
+    tumor_stage =
+      factor(tumor_stage),
+    patients_vital_status =
+      factor(patients_vital_status))
+```
+
+# Overall survival
+
+```{r}
+surv_obj = Surv(time = data$overall_survival_months,
+                event = data$overall_survival_status)
+
+fit = survfit(surv_obj ~ 1, data = data)
+
+ggsurvfit(fit) +
+  add_censor_mark() +
+  labs(
+    title = "Kaplan-Meier Curve",
+    x = "Time (Months)")
+```
+
+# Univariate Kaplan-Meier Curves
+
+```{r}
+cat_vars = 
+  data |>
+  select(where(is.factor)) |>
+  names()
+```
+
+```{r}
+surv_obj = Surv(time = data$overall_survival_months,
+                event = data$overall_survival_status)
+
+km_plot_func = function(fit, var) {
+  
+  ggsurvfit(fit) +
+    add_pvalue(location = "annotation",
+               caption = "Log-rank {p.value}") +
+    add_censor_mark() +
+    labs(
+      title = paste0("KM-Curve Stratified by Variable: ", var),
+      x = "Time (Months)")
+    
+}
+
+km_results = tibble(
+    variable = cat_vars) |>
+  mutate(
+    formula  = map(variable, \(var) as.formula(paste0("surv_obj ~ ", var))),
+    fit      = map(formula, \(f) survfit2(f, data = data)),
+    km_plot  = map2(fit, variable, \(fit, var) km_plot_func(fit, var)),
+    log_rank = map_dbl(formula, \(f) survdiff(f, data = data)$pvalue))
+```
+
+```{r}
+km_results |>
+  pull(km_plot)
+```
+
+# Significant Variables Determined by Log-Rank Test
+
+```{r}
+sig_vars =
+  km_results |>
+  filter(log_rank < 0.05) |>
+  arrange(log_rank) |>
+  select(variable, log_rank)
+
+sig_vars |> knitr::kable()
+```
+
