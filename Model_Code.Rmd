@@ -310,10 +310,61 @@ The deviance plots show The residuals are mostly centered around zero, which ind
 
 **If this doesn't fix the issues then try AFT model or expo regression or weibull regression model**
 
+Because accelerated failure time models do not accommodate time-varying coefficients, the AFT analysis was performed using the same baseline and interaction covariates as the Cox model, but assuming time-invariant effects. This provided a sensitivity comparison to assess whether the added complexity of the extended Cox model was supported by improvements in model fit.
 
+```{r}
+
+ 
+aft_weibull= survreg(
+  Surv(overall_survival_months, overall_survival_status) ~ 
+    age_at_diagnosis +
+    her2_status +
+    hormone_therapy +
+    inferred_menopausal_state +
+    primary_tumor_laterality +
+    lymph_nodes_examined_positive +
+    nottingham_prognostic_index +
+    radio_therapy +
+    log(tumor_size) +
+    log(tumor_size):hormone_therapy +
+    age_at_diagnosis:radio_therapy +
+    age_at_diagnosis:her2_status:lymph_nodes_examined_positive,
+  data = data,
+  dist = "weibull"
+)
+
+aft_lognormal= update(aft_weibull, dist = "lognormal")
+aft_loglogistic= update(aft_weibull, dist = "loglogistic")
+
+AIC(aft_lognormal)
+AIC(aft_weibull)
+AIC(aft_loglogistic)
+```
+
+The AFT model with the lowest AIC had a weibul distribution. 
 
 ### Re-check model fit
 
 (Comparison with km estimates, cumulative hazard vs time plots, AIC comparison)
+
+
+## Final Model 
+
+```{r}
+aft_ci = exp(confint(aft_weibull))
+aft_tr = exp(coef(aft_weibull))
+
+aft_table = data.frame(
+  Variable = names(aft_tr),
+  Time_Ratio = aft_tr,
+  CI_Lower = aft_ci[,1],
+  CI_Upper = aft_ci[,2]
+)
+
+aft_table|>
+  knitr::kable()
+
+
+```
 
 
