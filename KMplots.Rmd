@@ -16,12 +16,12 @@ knitr::opts_chunk$set(
   message = FALSE)
 ```
 
+# Data Cleaning
+
 ```{r}
 data = read_csv("Breast Cancer METABRIC.csv") |>
   janitor::clean_names()
 ```
-
-Factoring variables
 
 ```{r}
 data = 
@@ -46,7 +46,7 @@ data =
       factor(
         er_status_measured_by_ihc,
         levels = c("Negative", "Positve"),
-        labels = c("Negative", "Positive")),
+        labels = c("Negative", "Positive")), # Fixing Typo
     er_status = 
       factor(
         er_status,
@@ -90,6 +90,8 @@ data =
         relapse_free_status,
         "Not Recurred" ~ 0,
         "Recurred" ~ 1),
+    sex = 
+      factor(sex),
     three_gene_classifier_subtype =
       factor(three_gene_classifier_subtype),
     tumor_stage =
@@ -98,27 +100,45 @@ data =
       factor(patients_vital_status))
 ```
 
+Data cleaning primarily consisted of converting categorical variables to factors to support stratified Kaplan–Meier estimation and log-rank testing. No variables were discarded at this stage and all observations from the original dataset were retained.
+
 # Overall survival
 
 ```{r}
-surv_obj = Surv(time = data$overall_survival_months,
-                event = data$overall_survival_status)
-
-fit = survfit(surv_obj ~ 1, data = data)
+fit = survfit2(Surv(overall_survival_months, overall_survival_status) ~ 1,
+              data = data,
+              conf.type = "log-log")
 
 ggsurvfit(fit) +
   add_censor_mark() +
+  add_confidence_interval() +
   labs(
     title = "Kaplan-Meier Curve",
     x = "Time (Months)")
+
+surv_median(fit)
 ```
 
+A Kaplan–Meier curve was fit for overall survival. Confidence intervals were calculated using the log-log method and censoring indicators were added for interpretability. The estimated median survival time was approximately 156 months.
+
 # Univariate Kaplan-Meier Curves
+
+Nearly all categorical variables have been selected for univariate stratification. Variables removed include `patients_vital_status`, `her2_status_measured_by_snp6`, `er_status_measured_by_ihc`, and `sex`. 
+
+`patients_vital_status` is not a pre-existing characteristic, but rather an outcome-derived variable.
+
+`her2_status_measured_by_snp6` and `er_status_measured_by_ihc` columns represent specific measurements of ER and HER2 statuses. These are redundant due to the more general columns `her2_status` and `er_status`.
+
+`sex` is excluded since the dataset only consists of female patients.
 
 ```{r}
 cat_vars = 
   data |>
-  select(where(is.factor)) |>
+  select(where(is.factor),
+         -c(patients_vital_status, 
+            her2_status_measured_by_snp6, 
+            er_status_measured_by_ihc, 
+            sex)) |>
   names()
 ```
 
@@ -132,6 +152,7 @@ km_plot_func = function(fit, var) {
     add_pvalue(location = "annotation",
                caption = "Log-rank {p.value}") +
     add_censor_mark() +
+    add_confidence_interval() +
     labs(
       title = paste0("KM-Curve Stratified by Variable: ", var),
       x = "Time (Months)")
@@ -142,7 +163,7 @@ km_results = tibble(
     variable = cat_vars) |>
   mutate(
     formula  = map(variable, \(var) as.formula(paste0("surv_obj ~ ", var))),
-    fit      = map(formula, \(f) survfit2(f, data = data)),
+    fit      = map(formula, \(f) survfit2(f, data = data, conf.type = "log-log")),
     km_plot  = map2(fit, variable, \(fit, var) km_plot_func(fit, var)),
     log_rank = map_dbl(formula, \(f) survdiff(f, data = data)$pvalue))
 ```
@@ -154,13 +175,30 @@ km_results |>
 
 # Significant Variables Determined by Log-Rank Test
 
+The log-rank test (and CoxPH models) rely on the proportional hazards assumption. While KM curves are not a formal test of proportional hazards, dramatically crossing curves can indicate poor performance of the log-rank test and difficult interpretation. Therefore, variables whose KM plots contained heavily crossing curves or strong non-parallel patterns were excluded from the list of possibly significant variables.
+
+Excluded variables include:
+
+`chemotherapy`
+
+`er_status`
+
+`hormone_therapy`
+
+`three_gene_classifier_subtype`
+
 ```{r}
 sig_vars =
   km_results |>
-  filter(log_rank < 0.05) |>
+  filter(log_rank < 0.05,
+         !variable %in% c("chemotherapy",
+                          "er_status",
+                          "hormone_therapy",
+                          "three_gene_classifier_subtype")) |>
   arrange(log_rank) |>
   select(variable, log_rank)
 
 sig_vars |> knitr::kable()
 ```
 
+After filtering for a log-rank p-value < 0.05 and excluding variables with strongly non-parallel KM curves, the following variables remained significant. These may represent clinically or biologically relevant predictors of overall survival for breast cancer.
