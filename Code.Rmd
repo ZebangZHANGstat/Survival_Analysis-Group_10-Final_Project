@@ -308,3 +308,143 @@ table1 <-
 
 table1
 ```
+
+### Multivariable Cox Model
+
+```{r}
+library(survival)
+library(broom)
+
+final_inter_mod <- coxph(
+  Surv(
+    overall_survival_months,
+    overall_survival_status == "Deceased"   # event indicator
+  ) ~ 
+    age_at_diagnosis +
+    tumor_size +
+    lymph_nodes_examined_positive +
+    nottingham_prognostic_index +
+    radio_therapy +
+    inferred_menopausal_state +
+    tumor_stage +
+    three_gene_classifier_subtype +
+    type_of_breast_surgery +
+    cancer_type_detailed +
+    pam50_claudin_low_subtype +
+    tumor_other_histologic_subtype +
+    integrative_cluster +
+    mutation_count +
+    radio_therapy:tumor_size, # treatment × tumor size interaction
+  data = filtered_data
+)
+
+summary(final_inter_mod)
+
+cox_tidy <- broom::tidy(
+  final_inter_mod,
+  exponentiate = TRUE,
+  conf.int     = TRUE
+)
+
+cox_tidy
+```
+
+The multivariable Cox proportional hazards model evaluates how demographic, tumor, and treatment characteristics jointly affect overall survival among METABRIC breast cancer patients. After adjustment for all covariates, traditional prognostic factors such as older age at diagnosis, larger tumor size, a higher number of positive lymph nodes, and a higher Nottingham prognostic index generally show associations compatible with increased hazard of death, indicating worse survival as these measures of disease burden increase.
+
+Tumor-related categorical variables, including tumor stage, three_gene_classifier_subtype (ER/HER2 profile), pam50_claudin_low_subtype, tumor_other_histologic_subtype, cancer_type_detailed, and integrative_cluster, capture biologic and histologic differences between tumors and contribute additional information on risk. Treatment variables such as radio_therapy, along with menopausal status and type_of_breast_surgery, help describe differences in management patterns and their impact on survival. The inclusion of a radio_therapy × tumor_size interaction allows the association between tumor size and mortality risk to differ between patients who did and did not receive radiotherapy.
+
+Hazard ratios from this model represent the multiplicative change in the instantaneous risk of death associated with each covariate, holding all others constant. The directions of effect are broadly consistent with clinical expectations; however, these interpretations rely on the proportional hazards assumption, which is examined in the next section.
+
+### Proportional hazards (PH) diagnostics
+
+```{r}
+# Residual diagnostics
+par(mfrow = c(2, 2))
+
+plot(
+  resid(final_inter_mod, type = "martingale"),
+  main = "Martingale Residuals vs Linear Predictor",
+  ylab = "Martingale Residuals"
+)
+abline(h = 0, lty = 2)
+
+plot(
+  resid(final_inter_mod, type = "deviance"),
+  main = "Deviance Residuals vs Linear Predictor",
+  ylab = "Deviance Residuals"
+)
+abline(h = 0, lty = 2)
+
+# Schoenfeld residual PH test
+ph_test <- cox.zph(final_inter_mod)
+ph_test
+
+# Schoenfeld residual plots
+par(mfrow = c(2, 2))
+plot(ph_test)
+abline(h = 0, lty = 2)
+par(mfrow = c(1, 1))
+
+```
+Martingale and deviance residual plots do not reveal severe global model misfit, although a small number of influential observations and mild departures from perfect linearity are apparent. These diagnostics mainly suggest that the overall functional form of the model is reasonable but not flawless.
+
+The Schoenfeld residual test provides a more direct assessment of the proportional hazards assumption. The global test, along with several covariate-specific tests, indicates statistically significant time-varying effects for some predictors. In particular, variables such as age_at_diagnosis, radiotherapy, tumor characteristics, and their interaction (radio_therapy × tumor_size) show patterns in their Schoenfeld residual plots that deviate from a flat horizontal line, suggesting that their effects on the hazard of death change over time rather than remaining constant.
+
+Because the proportional hazards assumption is a key requirement of the Cox model, these findings imply that hazard ratios should be interpreted with some caution. To investigate robustness under an alternative modeling framework that does not require proportional hazards, we fit accelerated failure time (AFT) models as a sensitivity analysis.
+
+### AFT sensitivity analysis
+
+```{r}
+aft_weibull <- survreg(
+  Surv(
+    overall_survival_months,
+    overall_survival_status == "Deceased"
+  ) ~ 
+    age_at_diagnosis +
+    tumor_size +
+    lymph_nodes_examined_positive +
+    nottingham_prognostic_index +
+    radio_therapy +
+    inferred_menopausal_state +
+    tumor_stage +
+    three_gene_classifier_subtype +
+    type_of_breast_surgery +
+    cancer_type_detailed +
+    pam50_claudin_low_subtype +
+    tumor_other_histologic_subtype +
+    integrative_cluster +
+    mutation_count +
+    log(tumor_size):radio_therapy +
+    age_at_diagnosis:radio_therapy,
+  data = filtered_data,
+  dist = "weibull"
+)
+
+# Compare alternative distributions
+aft_lognormal   <- update(aft_weibull, dist = "lognormal")
+aft_loglogistic <- update(aft_weibull, dist = "loglogistic")
+
+AIC(aft_lognormal)
+AIC(aft_weibull)
+AIC(aft_loglogistic)
+
+# Extract time ratios with confidence intervals for Weibull model
+aft_ci <- exp(confint(aft_weibull))
+aft_tr <- exp(coef(aft_weibull))
+
+aft_table <- data.frame(
+  Variable   = names(aft_tr),
+  Time_Ratio = aft_tr,
+  CI_Lower   = aft_ci[, 1],
+  CI_Upper   = aft_ci[, 2]
+)
+
+aft_table
+```
+
+Given the evidence of proportional hazards violations in the Cox model, we fitted accelerated failure time (AFT) models as a robustness check. AFT models describe how covariates multiply survival time directly, rather than affecting the hazard, and therefore do not require proportional hazards.
+
+Using the same core predictors as in the Cox model, along with interactions involving log-transformed tumor_size and radiotherapy and age_at_diagnosis with radiotherapy, we fitted Weibull, lognormal, and log-logistic AFT models. Comparison of AIC values identified the Weibull distribution as the best-fitting parametric form among the three candidate models.
+
+In the AFT framework, exponentiated coefficients are interpreted as time ratios: a time_ratio greater than 1 indicates longer expected survival, whereas a time_ratio less than 1 indicates shorter expected survival, holding other factors constant. Consistent with the Cox model, factors reflecting greater tumor burden or worse prognosis (e.g., larger tumor_size, more lymph_nodes_examined_positive, higher nottingham_prognostic_index, and more advanced tumor_stage) are associated with shorter survival times. The general agreement between the Cox and Weibull AFT results suggests that the main substantive conclusions about key prognostic factors are robust, even when relaxing the proportional hazards assumption.
+
