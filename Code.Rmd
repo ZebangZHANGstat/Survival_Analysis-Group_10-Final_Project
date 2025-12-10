@@ -1,7 +1,7 @@
 ---
 title: "Survival Analysis Final Project"
 author: Group 10
-output: html_document
+output: pdf_document
 ---
 
 ```{r message=FALSE, warning=FALSE}
@@ -275,6 +275,7 @@ filtered_data <- filtered_data |>
 
 vars_for_table1 <- c(
   "age_at_diagnosis",
+  "her2_status",
   "tumor_size",
   "lymph_nodes_examined_positive",
   "mutation_count",
