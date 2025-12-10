@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.17)  9 DEC 2025 17:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.17)  10 DEC 2025 13:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -502,345 +502,350 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 <Code_files/figure-latex/unnamed-chunk-4-1.pdf, id=23, 469.755pt x 325.215pt>
 File: Code_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pdf)
 <use Code_files/figure-latex/unnamed-chunk-4-1.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-4-1.pdf  used on input line 301.
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-4-1.pdf  used on input line 303.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [3]
 <Code_files/figure-latex/unnamed-chunk-5-1.pdf, id=29, 469.755pt x 325.215pt>
 File: Code_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (type pdf)
 <use Code_files/figure-latex/unnamed-chunk-5-1.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-5-1.pdf  used on input line 326.
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-5-1.pdf  used on input line 328.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [4 <./Code_files/figure-latex/unnamed-chunk-4-1.pdf>] [5 <./Code_files/figure-latex/unnamed-chunk-5-1.pdf>]
 <Code_files/figure-latex/unnamed-chunk-7-1.pdf, id=49, 469.755pt x 325.215pt>
 File: Code_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (type pdf)
 <use Code_files/figure-latex/unnamed-chunk-7-1.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-7-1.pdf  used on input line 383.
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-7-1.pdf  used on input line 385.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [6 <./Code_files/figure-latex/unnamed-chunk-7-1.pdf>]
 <Code_files/figure-latex/unnamed-chunk-9-1.pdf, id=60, 469.755pt x 325.215pt>
 File: Code_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type pdf)
 <use Code_files/figure-latex/unnamed-chunk-9-1.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-9-1.pdf  used on input line 434.
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-9-1.pdf  used on input line 452.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [7] [8 <./Code_files/figure-latex/unnamed-chunk-9-1.pdf>] [9] [10] [11] [12]
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 706.
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 724.
 (/Users/rubp/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-<Code_files/figure-latex/unnamed-chunk-13-1.pdf, id=93, 469.755pt x 325.215pt>
+) [13{/Users/rubp/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
+<Code_files/figure-latex/unnamed-chunk-13-1.pdf, id=99, 469.755pt x 325.215pt>
 File: Code_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (type pdf)
 <use Code_files/figure-latex/unnamed-chunk-13-1.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-13-1.pdf  used on input line 746.
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-13-1.pdf  used on input line 790.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[13{/Users/rubp/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
-Underfull \hbox (badness 1577) in paragraph at lines 748--754
+[14 <./Code_files/figure-latex/unnamed-chunk-13-1.pdf>]
+<Code_files/figure-latex/unnamed-chunk-14-1.pdf, id=110, 469.755pt x 325.215pt>
+File: Code_files/figure-latex/unnamed-chunk-14-1.pdf Graphic file (type pdf)
+<use Code_files/figure-latex/unnamed-chunk-14-1.pdf>
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-14-1.pdf  used on input line 809.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+Underfull \hbox (badness 1577) in paragraph at lines 811--817
 []\T1/lmr/m/n/10 Based on the cor-re-la-tion ma-trix shown, re-lapse_free_status_months and over-all_survival_months
  []
 
-[14 <./Code_files/figure-latex/unnamed-chunk-13-1.pdf>] [15] [16] [17] [18] [19] [20] [21] [22] [23]
-Overfull \hbox (115.59158pt too wide) in alignment at lines 1337--1426
+[15 <./Code_files/figure-latex/unnamed-chunk-14-1.pdf>] [16] [17] [18] [19] [20] [21] [22] [23] [24]
+Overfull \hbox (115.59158pt too wide) in alignment at lines 1401--1494
 [] [] [] [] [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1428--1430
+Underfull \hbox (badness 10000) in paragraph at lines 1496--1498
 
  []
 
 
-LaTeX Warning: Float too large for page by 610.81142pt on input line 1431.
+LaTeX Warning: Float too large for page by 666.81142pt on input line 1499.
 
-
-Overfull \hbox (2.7436pt too wide) in paragraph at lines 1817--1817
+[25]
+Overfull \hbox (2.7436pt too wide) in paragraph at lines 1885--1885
 []\T1/lmtt/m/n/10 ##     cancer_type_detailed + pam50_claudin_low_subtype + tumor_other_histologic_subtype +[] 
  []
 
-[24] [25] [26] [27] [28] [29] [30]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1865.
+[26] [27] [28] [29] [30] [31] [32]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1933.
 (/Users/rubp/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Underfull \hbox (badness 1902) in paragraph at lines 1857--1868
+Underfull \hbox (badness 1902) in paragraph at lines 1925--1936
 \T1/lmr/m/n/10 pro-file), pam50_claudin_low_subtype, tu-mor_other_histologic_subtype, can-cer_type_detailed, and
  []
 
-[31]
-<Code_files/figure-latex/unnamed-chunk-20-1.pdf, id=187, 469.755pt x 325.215pt>
-File: Code_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type pdf)
-<use Code_files/figure-latex/unnamed-chunk-20-1.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-20-1.pdf  used on input line 1930.
+[33]
+<Code_files/figure-latex/unnamed-chunk-21-1.pdf, id=203, 469.755pt x 325.215pt>
+File: Code_files/figure-latex/unnamed-chunk-21-1.pdf Graphic file (type pdf)
+<use Code_files/figure-latex/unnamed-chunk-21-1.pdf>
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-21-1.pdf  used on input line 1998.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[32]
-<Code_files/figure-latex/unnamed-chunk-20-2.pdf, id=193, 469.755pt x 325.215pt>
-File: Code_files/figure-latex/unnamed-chunk-20-2.pdf Graphic file (type pdf)
-<use Code_files/figure-latex/unnamed-chunk-20-2.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-20-2.pdf  used on input line 1938.
+<Code_files/figure-latex/unnamed-chunk-21-2.pdf, id=204, 469.755pt x 325.215pt>
+File: Code_files/figure-latex/unnamed-chunk-21-2.pdf Graphic file (type pdf)
+<use Code_files/figure-latex/unnamed-chunk-21-2.pdf>
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-21-2.pdf  used on input line 2006.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Code_files/figure-latex/unnamed-chunk-20-3.pdf, id=194, 469.755pt x 325.215pt>
-File: Code_files/figure-latex/unnamed-chunk-20-3.pdf Graphic file (type pdf)
-<use Code_files/figure-latex/unnamed-chunk-20-3.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-20-3.pdf  used on input line 1939.
+<Code_files/figure-latex/unnamed-chunk-21-3.pdf, id=205, 469.755pt x 325.215pt>
+File: Code_files/figure-latex/unnamed-chunk-21-3.pdf Graphic file (type pdf)
+<use Code_files/figure-latex/unnamed-chunk-21-3.pdf>
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-21-3.pdf  used on input line 2007.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Code_files/figure-latex/unnamed-chunk-20-4.pdf, id=195, 469.755pt x 325.215pt>
-File: Code_files/figure-latex/unnamed-chunk-20-4.pdf Graphic file (type pdf)
-<use Code_files/figure-latex/unnamed-chunk-20-4.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-20-4.pdf  used on input line 1940.
+<Code_files/figure-latex/unnamed-chunk-21-4.pdf, id=206, 469.755pt x 325.215pt>
+File: Code_files/figure-latex/unnamed-chunk-21-4.pdf Graphic file (type pdf)
+<use Code_files/figure-latex/unnamed-chunk-21-4.pdf>
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-21-4.pdf  used on input line 2008.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1938--1941
+Underfull \hbox (badness 10000) in paragraph at lines 2006--2009
 [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1938--1941
+Underfull \hbox (badness 10000) in paragraph at lines 2006--2009
 []
  []
 
-[33 <./Code_files/figure-latex/unnamed-chunk-20-1.pdf>] [34 <./Code_files/figure-latex/unnamed-chunk-20-2.pdf>] [35 <./Code_files/figure-latex/unnamed-chunk-20-3.pdf>]
-<Code_files/figure-latex/unnamed-chunk-20-5.pdf, id=224, 469.755pt x 325.215pt>
-File: Code_files/figure-latex/unnamed-chunk-20-5.pdf Graphic file (type pdf)
-<use Code_files/figure-latex/unnamed-chunk-20-5.pdf>
-Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-20-5.pdf  used on input line 1949.
+[34 <./Code_files/figure-latex/unnamed-chunk-21-1.pdf>] [35 <./Code_files/figure-latex/unnamed-chunk-21-2.pdf>] [36 <./Code_files/figure-latex/unnamed-chunk-21-3.pdf>]
+<Code_files/figure-latex/unnamed-chunk-21-5.pdf, id=235, 469.755pt x 325.215pt>
+File: Code_files/figure-latex/unnamed-chunk-21-5.pdf Graphic file (type pdf)
+<use Code_files/figure-latex/unnamed-chunk-21-5.pdf>
+Package pdftex.def Info: Code_files/figure-latex/unnamed-chunk-21-5.pdf  used on input line 2017.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1949--1955
+Underfull \hbox (badness 10000) in paragraph at lines 2017--2023
 [][]
  []
 
-[36 <./Code_files/figure-latex/unnamed-chunk-20-4.pdf>] [37 <./Code_files/figure-latex/unnamed-chunk-20-5.pdf>]
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+[37 <./Code_files/figure-latex/unnamed-chunk-21-4.pdf>] [38 <./Code_files/figure-latex/unnamed-chunk-21-5.pdf>]
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ##                                                                                                                    Variable[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## (Intercept)                                                                                                     (Intercept)[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## age_at_diagnosis                                                                                           age_at_diagnosis[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## tumor_size                                                                                                       tumor_size[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## lymph_nodes_examined_positive                                                                 lymph_nodes_examined_positive[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## nottingham_prognostic_index                                                                     nottingham_prognostic_index[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## radio_therapyYes                                                                                           radio_therapyYes[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## inferred_menopausal_statePre                                                                   inferred_menopausal_statePre[] 
  []
 
-[38]
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+[39]
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## tumor_stage                                                                                                     tumor_stage[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## three_gene_classifier_subtypeER+/HER2- High Prolif                       three_gene_classifier_subtypeER+/HER2- High Prolif[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## three_gene_classifier_subtypeER+/HER2- Low Prolif                         three_gene_classifier_subtypeER+/HER2- Low Prolif[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## three_gene_classifier_subtypeHER2+                                                       three_gene_classifier_subtypeHER2+[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## type_of_breast_surgeryMastectomy                                                           type_of_breast_surgeryMastectomy[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## cancer_type_detailedBreast Invasive Ductal Carcinoma                   cancer_type_detailedBreast Invasive Ductal Carcinoma[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## cancer_type_detailedBreast Invasive Lobular Carcinoma                 cancer_type_detailedBreast Invasive Lobular Carcinoma[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## cancer_type_detailedBreast Invasive Mixed Mucinous Carcinoma   cancer_type_detailedBreast Invasive Mixed Mucinous Carcinoma[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## cancer_type_detailedBreast Mixed Ductal and Lobular Carcinoma cancer_type_detailedBreast Mixed Ductal and Lobular Carcinoma[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## pam50_claudin_low_subtypeclaudin-low                                                   pam50_claudin_low_subtypeclaudin-low[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## pam50_claudin_low_subtypeHer2                                                                 pam50_claudin_low_subtypeHer2[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## pam50_claudin_low_subtypeLumA                                                                 pam50_claudin_low_subtypeLumA[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## pam50_claudin_low_subtypeLumB                                                                 pam50_claudin_low_subtypeLumB[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## pam50_claudin_low_subtypeNC                                                                     pam50_claudin_low_subtypeNC[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## pam50_claudin_low_subtypeNormal                                                             pam50_claudin_low_subtypeNormal[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## tumor_other_histologic_subtypeLobular                                                 tumor_other_histologic_subtypeLobular[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## tumor_other_histologic_subtypeMedullary                                             tumor_other_histologic_subtypeMedullary[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## tumor_other_histologic_subtypeMixed                                                     tumor_other_histologic_subtypeMixed[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## tumor_other_histologic_subtypeMucinous                                               tumor_other_histologic_subtypeMucinous[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## tumor_other_histologic_subtypeOther                                                     tumor_other_histologic_subtypeOther[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## tumor_other_histologic_subtypeTubular/ cribriform                         tumor_other_histologic_subtypeTubular/ cribriform[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster10                                                                                 integrative_cluster10[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster2                                                                                   integrative_cluster2[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster3                                                                                   integrative_cluster3[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster4ER-                                                                             integrative_cluster4ER-[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster4ER+                                                                             integrative_cluster4ER+[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster5                                                                                   integrative_cluster5[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster6                                                                                   integrative_cluster6[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster7                                                                                   integrative_cluster7[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster8                                                                                   integrative_cluster8[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## integrative_cluster9                                                                                   integrative_cluster9[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## mutation_count                                                                                               mutation_count[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## radio_therapyNo:log(tumor_size)                                                             radio_therapyNo:log(tumor_size)[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## radio_therapyYes:log(tumor_size)                                                           radio_therapyYes:log(tumor_size)[] 
  []
 
 
-Overfull \hbox (191.74306pt too wide) in paragraph at lines 2223--2223
+Overfull \hbox (191.74306pt too wide) in paragraph at lines 2291--2291
 []\T1/lmtt/m/n/10 ## age_at_diagnosis:radio_therapyYes                                                         age_at_diagnosis:radio_therapyYes[] 
  []
 
-[39] [40] [41] [42] [43] (./Code.aux)
+[40] [41] [42] [43] [44] (./Code.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-11-06>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 13485 strings out of 469519
- 215175 string characters out of 5469262
- 699515 words of memory out of 5000000
- 41879 multiletter control sequences out of 15000+600000
+ 13493 strings out of 469519
+ 215576 string characters out of 5469262
+ 700801 words of memory out of 5000000
+ 41886 multiletter control sequences out of 15000+600000
  664625 words of font info for 69 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  89i,13n,93p,737b,638s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb></Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/rubp/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on Code.pdf (43 pages, 1032019 bytes).
+Output written on Code.pdf (44 pages, 1041049 bytes).
 PDF statistics:
- 368 PDF objects out of 1000 (max. 8388607)
- 279 compressed objects within 3 object streams
- 58 named destinations out of 1000 (max. 500000)
- 139 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 379 PDF objects out of 1000 (max. 8388607)
+ 287 compressed objects within 3 object streams
+ 59 named destinations out of 1000 (max. 500000)
+ 144 words of extra memory for PDF output out of 10000 (max. 10000000)
 

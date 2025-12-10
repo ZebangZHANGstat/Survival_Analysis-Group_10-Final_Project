@@ -11,6 +11,8 @@ library(janitor)
 library(ggcorrplot)
 library(dplyr)
 library(gtsummary)
+library(tidyr)
+library(ggplot2)
 ```
 
 ## EDA
@@ -129,9 +131,25 @@ continuous_vars
 ```
 
 ```{r warning=FALSE}
-# Histograms for all continuous variables
-data %>%
-  select(all_of(setdiff(continuous_vars, "overall_survival_months"))) %>%
+data_plot <- data %>%
+  mutate(
+    log_tumor_size = log(tumor_size),
+    log_mutation_count = log(mutation_count),
+    log_lymph_nodes_examined_positive = log(lymph_nodes_examined_positive+1)
+  )
+
+# variables you want to plot (original + new logs)
+vars_to_plot <- c(
+  setdiff(continuous_vars, "overall_survival_months"),    # original ones
+  "log_tumor_size",
+  "log_mutation_count",
+  "log_lymph_nodes_examined_positive"
+)
+
+# ---- PLOT ------------------------------------------------------------------
+
+data_plot %>%
+  select(all_of(vars_to_plot)) %>%
   pivot_longer(
     cols = everything(),
     names_to = "variable",
@@ -141,7 +159,7 @@ data %>%
   geom_histogram(bins = 20) +
   facet_wrap(~ variable, scales = "free_x") +
   labs(
-    title = "Distributions of continuous variables",
+    title = "Distributions of Continuous and Log-Transformed Variables",
     x = "Value",
     y = "Count"
   )
@@ -178,6 +196,48 @@ categorical_vars <- setdiff(categorical_vars, c("sex", "cancer_type"))
 # Print updated categorical_vars
 categorical_vars
 ```
+
+```{r}
+cats_for_plot <- c(
+  "type_of_breast_surgery",
+  "cancer_type_detailed",
+  "cellularity",
+  "chemotherapy",
+  "her2_status",
+  "hormone_therapy",
+  "radio_therapy",
+  "inferred_menopausal_state"
+)
+
+cat_long <- data %>%
+  select(all_of(cats_for_plot)) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to  = "variable",
+    values_to = "category"
+  ) %>%
+  drop_na(category) %>%
+  # order levels within each variable by frequency
+  group_by(variable) %>%
+  mutate(category = fct_infreq(category)) %>%
+  ungroup()
+
+ggplot(cat_long, aes(x = category)) +
+  geom_bar() +
+  coord_flip() +  # make bars horizontal so labels are readable
+  facet_wrap(~ variable, scales = "free_y", ncol = 2) +
+  labs(
+    title = "Counts for Key Categorical Variables",
+    x = NULL,
+    y = "Count"
+  ) +
+  theme_bw() +
+  theme(
+    axis.text.y = element_text(size = 8),
+    strip.text  = element_text(face = "bold")
+  )
+```
+
 
 ### Correlation analysis:
 
@@ -306,7 +366,7 @@ pvalue_fmt <- function(x) {
 }
 
 table1 <-
-  filtered_data |>
+  data |>
   select(all_of(c("overall_survival_status", vars_for_table1))) |>
   tbl_summary(
     by = overall_survival_status,
