@@ -1,7 +1,7 @@
 ---
 title: "Survival Analysis Final Project"
 author: Group 10
-output: pdf_document
+output: html_document
 ---
 
 ```{r message=FALSE, warning=FALSE}
@@ -367,7 +367,7 @@ pvalue_fmt <- function(x) {
 
 table1 <-
   data |>
-  select(all_of(c("overall_survival_status", vars_for_table1))) |>
+  dplyr::select(all_of(c("overall_survival_status", vars_for_table1))) |>
   tbl_summary(
     by = overall_survival_status,
     type = list(
@@ -378,7 +378,7 @@ table1 <-
       all_of(continuous_vars) ~ "{mean} ({sd})",
       all_categorical()       ~ "{n} ({p}%)"
     ),
-    missing = "ifany"
+    missing = "no"   # <--- do NOT create 'Unknown' rows
   ) |>
   add_n() |>
   add_p(
