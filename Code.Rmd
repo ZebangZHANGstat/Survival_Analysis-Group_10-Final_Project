@@ -122,7 +122,6 @@ continuous_vars <- c(
   "tumor_size",
   "lymph_nodes_examined_positive",
   "mutation_count",
-  "nottingham_prognostic_index",
   "overall_survival_months",
   "relapse_free_status_months"
 )
