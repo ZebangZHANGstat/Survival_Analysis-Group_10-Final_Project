@@ -263,34 +263,11 @@ continuous_vars <- setdiff(continuous_vars, "relapse_free_status_months")
 ```
 
 ```{r warning=FALSE}
-# Create an empty data frame to store results
-chi_results <- data.frame(
-  variable = character(),
-  p_value = numeric(),
-  stringsAsFactors = FALSE
-)
-
-# Perform Chi-Square Test for each categorical variable with overall_survival_status
 for (var in categorical_vars) {
-  
   # Create a contingency table for each variable and survival status
   contingency_table <- table(data[[var]], data$overall_survival_status)
-  
-  # Perform Chi-Square test
-  chi_test <- chisq.test(contingency_table)
-  
-  # Store the results in chi_results dataframe
-  chi_results <- rbind(chi_results, data.frame(variable = var, p_value = chi_test$p.value))
-  
-  # Print the contingency table and the p-value
-  cat("\n\n==============================\n")
-  cat("Variable:", var, "\n")
   print(contingency_table)
-  cat("P-value for Chi-Square Test:", chi_test$p.value, "\n")
 }
-
-# Print the final results with p-values for all variables except overall_survival_status
-chi_results
 ```
 
 Since "vital_status" variable is already directly related to the outcome of survival and is a proxy for the status of the patient, it is unnecessary to include it in the model. This variable is highly correlated with survival, and adding it could lead to perfect prediction of the outcome or multicollinearity.
@@ -300,23 +277,16 @@ Although the chi-square test showed a statistically significant association betw
 Although "relapse_free_status" shows a highly significant association with overall survival status in the chi-square test, we chose not to include it as a covariate in the overall survival model. Clinically, relapse is an intermediate outcome that occurs after baseline and lies on the causal pathway between baseline risk factors and death. Treating relapse status as a predictor of overall survival would therefore introduce information leakage and could distort the estimated effects of true baseline covariates. In addition, "relapse_free_status" is closely related to "relapse_free_status_months", which we already excluded as an alternative time-to-event endpoint.
 
 ```{r}
-# Filter results to only show variables with p-value < 0.05 and exclude 'vital_status' and 'cohort'
-significant_vars <- chi_results %>%
-  filter(p_value < 0.05) %>%
-  filter(!variable %in% c("vital_status","cohort","relapse_free_status"))
-
-# Print the significant variables
-significant_vars
+# Exclude "vital_status","cohort","relapse_free_status" in categorical variables
+categorical_vars <- setdiff(categorical_vars, c("vital_status","cohort","relapse_free_status"))
+categorical_vars
 ```
 
 ### Final dataset after variable selection
 
 ```{r}
-# Extract significant variables' names from significant_vars (filter for p-value < 0.05)
-significant_var_names <- significant_vars$variable
-
-# Filter the data by including only the selected variables from both significant_vars and continuous_vars
-selected_vars <- c(significant_var_names, continuous_vars)
+# Filter the data by including only the selected variables from both categorical_vars and continuous_vars
+selected_vars <- c(categorical_vars, continuous_vars)
 
 # Create a new dataset with only the selected variables
 filtered_data <- data %>%

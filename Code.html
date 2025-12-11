@@ -1283,44 +1283,15 @@ includes all relevant information related to the occurrence of the
 event.</p>
 <pre class="r"><code># Remove &#39;relapse_free_status_months&#39; from continuous_vars
 continuous_vars &lt;- setdiff(continuous_vars, &quot;relapse_free_status_months&quot;)</code></pre>
-<pre class="r"><code># Create an empty data frame to store results
-chi_results &lt;- data.frame(
-  variable = character(),
-  p_value = numeric(),
-  stringsAsFactors = FALSE
-)
-
-# Perform Chi-Square Test for each categorical variable with overall_survival_status
-for (var in categorical_vars) {
-  
+<pre class="r"><code>for (var in categorical_vars) {
   # Create a contingency table for each variable and survival status
   contingency_table &lt;- table(data[[var]], data$overall_survival_status)
-  
-  # Perform Chi-Square test
-  chi_test &lt;- chisq.test(contingency_table)
-  
-  # Store the results in chi_results dataframe
-  chi_results &lt;- rbind(chi_results, data.frame(variable = var, p_value = chi_test$p.value))
-  
-  # Print the contingency table and the p-value
-  cat(&quot;\n\n==============================\n&quot;)
-  cat(&quot;Variable:&quot;, var, &quot;\n&quot;)
   print(contingency_table)
-  cat(&quot;P-value for Chi-Square Test:&quot;, chi_test$p.value, &quot;\n&quot;)
 }</code></pre>
-<pre><code>## 
-## 
-## ==============================
-## Variable: type_of_breast_surgery 
-##                    
+<pre><code>##                    
 ##                     Deceased Living
 ##   Breast Conserving      368    416
 ##   Mastectomy             759    410
-## P-value for Chi-Square Test: 4.464438e-15</code></pre>
-<pre><code>## 
-## 
-## ==============================
-## Variable: cancer_type_detailed 
 ##                                            
 ##                                             Deceased Living
 ##   Breast                                           5     12
@@ -1330,30 +1301,15 @@ for (var in categorical_vars) {
 ##   Breast Mixed Ductal and Lobular Carcinoma      132     79
 ##   Invasive Breast Carcinoma                       18     24
 ##   Metaplastic Breast Cancer                        2      0
-## P-value for Chi-Square Test: 0.02097761 
-## 
-## 
-## ==============================
-## Variable: cellularity 
 ##           
 ##            Deceased Living
 ##   High          562    402
 ##   Low           116     99
 ##   Moderate      436    300
-## P-value for Chi-Square Test: 0.3822673 
-## 
-## 
-## ==============================
-## Variable: chemotherapy 
 ##      
 ##       Deceased Living
 ##   No       920    645
 ##   Yes      223    189
-## P-value for Chi-Square Test: 0.09937019</code></pre>
-<pre><code>## 
-## 
-## ==============================
-## Variable: pam50_claudin_low_subtype 
 ##              
 ##               Deceased Living
 ##   Basal            115     94
@@ -1363,11 +1319,6 @@ for (var in categorical_vars) {
 ##   LumB             315    160
 ##   NC                 5      1
 ##   Normal            79     69
-## P-value for Chi-Square Test: 1.139447e-09 
-## 
-## 
-## ==============================
-## Variable: cohort 
 ##    
 ##     Deceased Living
 ##   1      227    292
@@ -1375,59 +1326,29 @@ for (var in categorical_vars) {
 ##   3      529    234
 ##   4      124    114
 ##   5      115     55
-## P-value for Chi-Square Test: 2.669872e-20 
-## 
-## 
-## ==============================
-## Variable: er_status_measured_by_ihc 
 ##           
 ##            Deceased Living
 ##   Negative      246    193
 ##   Positve       880    619
-## P-value for Chi-Square Test: 0.3462201 
-## 
-## 
-## ==============================
-## Variable: er_status 
 ##           
 ##            Deceased Living
 ##   Negative      262    210
 ##   Positive      882    624
-## P-value for Chi-Square Test: 0.262618 
-## 
-## 
-## ==============================
-## Variable: neoplasm_histologic_grade 
 ##    
 ##     Deceased Living
 ##   1       76     93
 ##   2      432    339
 ##   3      579    374
-## P-value for Chi-Square Test: 0.0003979277</code></pre>
-<pre><code>## 
-## 
-## ==============================
-## Variable: her2_status_measured_by_snp6 
 ##          
 ##           Deceased Living
 ##   Gain         270    168
 ##   Loss          52     49
 ##   Neutral      818    615
 ##   Undef          3      2
-## P-value for Chi-Square Test: 0.202126 
-## 
-## 
-## ==============================
-## Variable: her2_status 
 ##           
 ##            Deceased Living
 ##   Negative      988    742
 ##   Positive      155     92
-## P-value for Chi-Square Test: 0.1071625</code></pre>
-<pre><code>## 
-## 
-## ==============================
-## Variable: tumor_other_histologic_subtype 
 ##                      
 ##                       Deceased Living
 ##   Ductal/NST               871    620
@@ -1438,29 +1359,14 @@ for (var in categorical_vars) {
 ##   Mucinous                  10     13
 ##   Other                      5     12
 ##   Tubular/ cribriform        6     15
-## P-value for Chi-Square Test: 0.009518724 
-## 
-## 
-## ==============================
-## Variable: hormone_therapy 
 ##      
 ##       Deceased Living
 ##   No       426    335
 ##   Yes      717    499
-## P-value for Chi-Square Test: 0.2073769 
-## 
-## 
-## ==============================
-## Variable: inferred_menopausal_state 
 ##       
 ##        Deceased Living
 ##   Post      966    587
 ##   Pre       177    247
-## P-value for Chi-Square Test: 6.178334e-14 
-## 
-## 
-## ==============================
-## Variable: integrative_cluster 
 ##       
 ##        Deceased Living
 ##   1          80     59
@@ -1474,20 +1380,10 @@ for (var in categorical_vars) {
 ##   7         113     77
 ##   8         179    120
 ##   9          98     48
-## P-value for Chi-Square Test: 1.504806e-06 
-## 
-## 
-## ==============================
-## Variable: primary_tumor_laterality 
 ##        
 ##         Deceased Living
 ##   Left       571    400
 ##   Right      495    402
-## P-value for Chi-Square Test: 0.1252675</code></pre>
-<pre><code>## 
-## 
-## ==============================
-## Variable: nottingham_prognostic_index 
 ##          
 ##           Deceased Living
 ##   1              2      1
@@ -1810,11 +1706,6 @@ for (var in categorical_vars) {
 ##   6.3            1      0
 ##   6.32           1      0
 ##   6.36           1      0
-## P-value for Chi-Square Test: 3.455558e-05</code></pre>
-<pre><code>## 
-## 
-## ==============================
-## Variable: oncotree_code 
 ##         
 ##          Deceased Living
 ##   BRCA         18     24
@@ -1824,58 +1715,28 @@ for (var in categorical_vars) {
 ##   IMMC         10     13
 ##   MBC           2      0
 ##   MDLC        132     79
-## P-value for Chi-Square Test: 0.02097761 
-## 
-## 
-## ==============================
-## Variable: overall_survival_status 
 ##           
 ##            Deceased Living
 ##   Deceased     1144      0
 ##   Living          0    834
-## P-value for Chi-Square Test: 0 
-## 
-## 
-## ==============================
-## Variable: pr_status 
 ##           
 ##            Deceased Living
 ##   Negative      551    386
 ##   Positive      592    448
-## P-value for Chi-Square Test: 0.4235425 
-## 
-## 
-## ==============================
-## Variable: radio_therapy 
 ##      
 ##       Deceased Living
 ##   No       514    290
 ##   Yes      629    544
-## P-value for Chi-Square Test: 6.420301e-06 
-## 
-## 
-## ==============================
-## Variable: relapse_free_status 
 ##               
 ##                Deceased Living
 ##   Not Recurred      432    742
 ##   Recurred          711     92
-## P-value for Chi-Square Test: 2.106947e-115 
-## 
-## 
-## ==============================
-## Variable: three_gene_classifier_subtype 
 ##                        
 ##                         Deceased Living
 ##   ER-/HER2-                  153    154
 ##   ER+/HER2- High Prolif      400    217
 ##   ER+/HER2- Low Prolif       329    311
 ##   HER2+                      121     77
-## P-value for Chi-Square Test: 7.079376e-07</code></pre>
-<pre><code>## 
-## 
-## ==============================
-## Variable: tumor_stage 
 ##    
 ##     Deceased Living
 ##   0        2      9
@@ -1883,45 +1744,11 @@ for (var in categorical_vars) {
 ##   2      497    328
 ##   3       87     31
 ##   4        9      1
-## P-value for Chi-Square Test: 4.935459e-11 
-## 
-## 
-## ==============================
-## Variable: vital_status 
 ##                       
 ##                        Deceased Living
 ##   Died of Disease           646      0
 ##   Died of Other Causes      497      0
-##   Living                      0    834
-## P-value for Chi-Square Test: 0</code></pre>
-<pre class="r"><code># Print the final results with p-values for all variables except overall_survival_status
-chi_results</code></pre>
-<pre><code>##                          variable       p_value
-## 1          type_of_breast_surgery  4.464438e-15
-## 2            cancer_type_detailed  2.097761e-02
-## 3                     cellularity  3.822673e-01
-## 4                    chemotherapy  9.937019e-02
-## 5       pam50_claudin_low_subtype  1.139447e-09
-## 6                          cohort  2.669872e-20
-## 7       er_status_measured_by_ihc  3.462201e-01
-## 8                       er_status  2.626180e-01
-## 9       neoplasm_histologic_grade  3.979277e-04
-## 10   her2_status_measured_by_snp6  2.021260e-01
-## 11                    her2_status  1.071625e-01
-## 12 tumor_other_histologic_subtype  9.518724e-03
-## 13                hormone_therapy  2.073769e-01
-## 14      inferred_menopausal_state  6.178334e-14
-## 15            integrative_cluster  1.504806e-06
-## 16       primary_tumor_laterality  1.252675e-01
-## 17    nottingham_prognostic_index  3.455558e-05
-## 18                  oncotree_code  2.097761e-02
-## 19        overall_survival_status  0.000000e+00
-## 20                      pr_status  4.235425e-01
-## 21                  radio_therapy  6.420301e-06
-## 22            relapse_free_status 2.106947e-115
-## 23  three_gene_classifier_subtype  7.079376e-07
-## 24                    tumor_stage  4.935459e-11
-## 25                   vital_status  0.000000e+00</code></pre>
+##   Living                      0    834</code></pre>
 <p>Since “vital_status” variable is already directly related to the
 outcome of survival and is a proxy for the status of the patient, it is
 unnecessary to include it in the model. This variable is highly
@@ -1945,35 +1772,25 @@ introduce information leakage and could distort the estimated effects of
 true baseline covariates. In addition, “relapse_free_status” is closely
 related to “relapse_free_status_months”, which we already excluded as an
 alternative time-to-event endpoint.</p>
-<pre class="r"><code># Filter results to only show variables with p-value &lt; 0.05 and exclude &#39;vital_status&#39; and &#39;cohort&#39;
-significant_vars &lt;- chi_results %&gt;%
-  filter(p_value &lt; 0.05) %&gt;%
-  filter(!variable %in% c(&quot;vital_status&quot;,&quot;cohort&quot;,&quot;relapse_free_status&quot;))
-
-# Print the significant variables
-significant_vars</code></pre>
-<pre><code>##                          variable      p_value
-## 1          type_of_breast_surgery 4.464438e-15
-## 2            cancer_type_detailed 2.097761e-02
-## 3       pam50_claudin_low_subtype 1.139447e-09
-## 4       neoplasm_histologic_grade 3.979277e-04
-## 5  tumor_other_histologic_subtype 9.518724e-03
-## 6       inferred_menopausal_state 6.178334e-14
-## 7             integrative_cluster 1.504806e-06
-## 8     nottingham_prognostic_index 3.455558e-05
-## 9                   oncotree_code 2.097761e-02
-## 10        overall_survival_status 0.000000e+00
-## 11                  radio_therapy 6.420301e-06
-## 12  three_gene_classifier_subtype 7.079376e-07
-## 13                    tumor_stage 4.935459e-11</code></pre>
+<pre class="r"><code># Exclude &quot;vital_status&quot;,&quot;cohort&quot;,&quot;relapse_free_status&quot; in categorical variables
+categorical_vars &lt;- setdiff(categorical_vars, c(&quot;vital_status&quot;,&quot;cohort&quot;,&quot;relapse_free_status&quot;))
+categorical_vars</code></pre>
+<pre><code>##  [1] &quot;type_of_breast_surgery&quot;         &quot;cancer_type_detailed&quot;          
+##  [3] &quot;cellularity&quot;                    &quot;chemotherapy&quot;                  
+##  [5] &quot;pam50_claudin_low_subtype&quot;      &quot;er_status_measured_by_ihc&quot;     
+##  [7] &quot;er_status&quot;                      &quot;neoplasm_histologic_grade&quot;     
+##  [9] &quot;her2_status_measured_by_snp6&quot;   &quot;her2_status&quot;                   
+## [11] &quot;tumor_other_histologic_subtype&quot; &quot;hormone_therapy&quot;               
+## [13] &quot;inferred_menopausal_state&quot;      &quot;integrative_cluster&quot;           
+## [15] &quot;primary_tumor_laterality&quot;       &quot;nottingham_prognostic_index&quot;   
+## [17] &quot;oncotree_code&quot;                  &quot;overall_survival_status&quot;       
+## [19] &quot;pr_status&quot;                      &quot;radio_therapy&quot;                 
+## [21] &quot;three_gene_classifier_subtype&quot;  &quot;tumor_stage&quot;</code></pre>
 </div>
 <div id="final-dataset-after-variable-selection" class="section level3">
 <h3>Final dataset after variable selection</h3>
-<pre class="r"><code># Extract significant variables&#39; names from significant_vars (filter for p-value &lt; 0.05)
-significant_var_names &lt;- significant_vars$variable
-
-# Filter the data by including only the selected variables from both significant_vars and continuous_vars
-selected_vars &lt;- c(significant_var_names, continuous_vars)
+<pre class="r"><code># Filter the data by including only the selected variables from both categorical_vars and continuous_vars
+selected_vars &lt;- c(categorical_vars, continuous_vars)
 
 # Create a new dataset with only the selected variables
 filtered_data &lt;- data %&gt;%
@@ -1981,55 +1798,62 @@ filtered_data &lt;- data %&gt;%
 
 # View the filtered dataset
 head(filtered_data)</code></pre>
-<pre><code>##   type_of_breast_surgery                      cancer_type_detailed
-## 1             Mastectomy          Breast Invasive Ductal Carcinoma
-## 2      Breast Conserving          Breast Invasive Ductal Carcinoma
-## 3             Mastectomy          Breast Invasive Ductal Carcinoma
-## 4             Mastectomy Breast Mixed Ductal and Lobular Carcinoma
-## 5             Mastectomy Breast Mixed Ductal and Lobular Carcinoma
-## 6             Mastectomy          Breast Invasive Ductal Carcinoma
-##   pam50_claudin_low_subtype neoplasm_histologic_grade
-## 1               claudin-low                         3
-## 2                      LumA                         3
-## 3                      LumB                         2
-## 4                      LumB                         2
-## 5                      LumB                         3
-## 6                      LumB                         3
-##   tumor_other_histologic_subtype inferred_menopausal_state integrative_cluster
-## 1                     Ductal/NST                      Post                4ER+
-## 2                     Ductal/NST                       Pre                4ER+
-## 3                     Ductal/NST                       Pre                   3
-## 4                          Mixed                       Pre                   9
-## 5                          Mixed                      Post                   9
-## 6                     Ductal/NST                      Post                   7
-##   nottingham_prognostic_index oncotree_code overall_survival_status
-## 1                       6.044           IDC                  Living
-## 2                       4.020           IDC                  Living
-## 3                       4.030           IDC                Deceased
-## 4                       4.050          MDLC                  Living
-## 5                       6.080          MDLC                Deceased
-## 6                       4.062           IDC                Deceased
-##   radio_therapy three_gene_classifier_subtype tumor_stage age_at_diagnosis
-## 1           Yes                     ER-/HER2-           2            75.65
-## 2           Yes         ER+/HER2- High Prolif           1            43.19
-## 3            No                          &lt;NA&gt;           2            48.87
-## 4           Yes                          &lt;NA&gt;           2            47.68
-## 5           Yes         ER+/HER2- High Prolif           2            76.97
-## 6           Yes         ER+/HER2- High Prolif           4            78.77
-##   tumor_size lymph_nodes_examined_positive mutation_count
-## 1         22                            10             NA
-## 2         10                             0              2
-## 3         15                             1              2
-## 4         25                             3              1
-## 5         40                             8              2
-## 6         31                             0              4
-##   overall_survival_months
-## 1               140.50000
-## 2                84.63333
-## 3               163.70000
-## 4               164.93333
-## 5                41.36667
-## 6                 7.80000</code></pre>
+<pre><code>##   type_of_breast_surgery                      cancer_type_detailed cellularity
+## 1             Mastectomy          Breast Invasive Ductal Carcinoma        &lt;NA&gt;
+## 2      Breast Conserving          Breast Invasive Ductal Carcinoma        High
+## 3             Mastectomy          Breast Invasive Ductal Carcinoma        High
+## 4             Mastectomy Breast Mixed Ductal and Lobular Carcinoma    Moderate
+## 5             Mastectomy Breast Mixed Ductal and Lobular Carcinoma        High
+## 6             Mastectomy          Breast Invasive Ductal Carcinoma    Moderate
+##   chemotherapy pam50_claudin_low_subtype er_status_measured_by_ihc er_status
+## 1           No               claudin-low                   Positve  Positive
+## 2           No                      LumA                   Positve  Positive
+## 3          Yes                      LumB                   Positve  Positive
+## 4          Yes                      LumB                   Positve  Positive
+## 5          Yes                      LumB                   Positve  Positive
+## 6           No                      LumB                   Positve  Positive
+##   neoplasm_histologic_grade her2_status_measured_by_snp6 her2_status
+## 1                         3                      Neutral    Negative
+## 2                         3                      Neutral    Negative
+## 3                         2                      Neutral    Negative
+## 4                         2                      Neutral    Negative
+## 5                         3                      Neutral    Negative
+## 6                         3                      Neutral    Negative
+##   tumor_other_histologic_subtype hormone_therapy inferred_menopausal_state
+## 1                     Ductal/NST             Yes                      Post
+## 2                     Ductal/NST             Yes                       Pre
+## 3                     Ductal/NST             Yes                       Pre
+## 4                          Mixed             Yes                       Pre
+## 5                          Mixed             Yes                      Post
+## 6                     Ductal/NST             Yes                      Post
+##   integrative_cluster primary_tumor_laterality nottingham_prognostic_index
+## 1                4ER+                    Right                       6.044
+## 2                4ER+                    Right                       4.020
+## 3                   3                    Right                       4.030
+## 4                   9                    Right                       4.050
+## 5                   9                    Right                       6.080
+## 6                   7                     Left                       4.062
+##   oncotree_code overall_survival_status pr_status radio_therapy
+## 1           IDC                  Living  Negative           Yes
+## 2           IDC                  Living  Positive           Yes
+## 3           IDC                Deceased  Positive            No
+## 4          MDLC                  Living  Positive           Yes
+## 5          MDLC                Deceased  Positive           Yes
+## 6           IDC                Deceased  Positive           Yes
+##   three_gene_classifier_subtype tumor_stage age_at_diagnosis tumor_size
+## 1                     ER-/HER2-           2            75.65         22
+## 2         ER+/HER2- High Prolif           1            43.19         10
+## 3                          &lt;NA&gt;           2            48.87         15
+## 4                          &lt;NA&gt;           2            47.68         25
+## 5         ER+/HER2- High Prolif           2            76.97         40
+## 6         ER+/HER2- High Prolif           4            78.77         31
+##   lymph_nodes_examined_positive mutation_count overall_survival_months
+## 1                            10             NA               140.50000
+## 2                             0              2                84.63333
+## 3                             1              2               163.70000
+## 4                             3              1               164.93333
+## 5                             8              2                41.36667
+## 6                             0              4                 7.80000</code></pre>
 </div>
 <div id="overview-of-demographic-and-baseline-variables-table-1" class="section level3">
 <h3>Overview of demographic and baseline variables (Table 1)</h3>
@@ -2107,20 +1931,20 @@ table1 &lt;-
 ##   &quot;p.value&quot;, and &quot;parameter&quot; statistics: Chi-squared approximation may be
 ##   incorrect</code></pre>
 <pre class="r"><code>table1</code></pre>
-<div id="pwnryqvzhs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pwnryqvzhs table {
+<div id="pxeaxnmrld" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#pxeaxnmrld table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#pwnryqvzhs thead, #pwnryqvzhs tbody, #pwnryqvzhs tfoot, #pwnryqvzhs tr, #pwnryqvzhs td, #pwnryqvzhs th {
+#pxeaxnmrld thead, #pxeaxnmrld tbody, #pxeaxnmrld tfoot, #pxeaxnmrld tr, #pxeaxnmrld td, #pxeaxnmrld th {
 border-style: none;
 }
-#pwnryqvzhs p {
+#pxeaxnmrld p {
 margin: 0;
 padding: 0;
 }
-#pwnryqvzhs .gt_table {
+#pxeaxnmrld .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2145,11 +1969,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_caption {
+#pxeaxnmrld .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#pwnryqvzhs .gt_title {
+#pxeaxnmrld .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2160,7 +1984,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#pwnryqvzhs .gt_subtitle {
+#pxeaxnmrld .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2171,7 +1995,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#pwnryqvzhs .gt_heading {
+#pxeaxnmrld .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2182,12 +2006,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_bottom_border {
+#pxeaxnmrld .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_col_headings {
+#pxeaxnmrld .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2201,7 +2025,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_col_heading {
+#pxeaxnmrld .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2220,7 +2044,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#pwnryqvzhs .gt_column_spanner_outer {
+#pxeaxnmrld .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2231,13 +2055,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#pwnryqvzhs .gt_column_spanner_outer:first-child {
+#pxeaxnmrld .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#pwnryqvzhs .gt_column_spanner_outer:last-child {
+#pxeaxnmrld .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#pwnryqvzhs .gt_column_spanner {
+#pxeaxnmrld .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2248,10 +2072,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#pwnryqvzhs .gt_spanner_row {
+#pxeaxnmrld .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#pwnryqvzhs .gt_group_heading {
+#pxeaxnmrld .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2276,7 +2100,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#pwnryqvzhs .gt_empty_group_heading {
+#pxeaxnmrld .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2290,13 +2114,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#pwnryqvzhs .gt_from_md > :first-child {
+#pxeaxnmrld .gt_from_md > :first-child {
 margin-top: 0;
 }
-#pwnryqvzhs .gt_from_md > :last-child {
+#pxeaxnmrld .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#pwnryqvzhs .gt_row {
+#pxeaxnmrld .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2314,7 +2138,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#pwnryqvzhs .gt_stub {
+#pxeaxnmrld .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2326,7 +2150,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pwnryqvzhs .gt_stub_row_group {
+#pxeaxnmrld .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2339,13 +2163,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#pwnryqvzhs .gt_row_group_first td {
+#pxeaxnmrld .gt_row_group_first td {
 border-top-width: 2px;
 }
-#pwnryqvzhs .gt_row_group_first th {
+#pxeaxnmrld .gt_row_group_first th {
 border-top-width: 2px;
 }
-#pwnryqvzhs .gt_summary_row {
+#pxeaxnmrld .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2354,14 +2178,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pwnryqvzhs .gt_first_summary_row {
+#pxeaxnmrld .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_first_summary_row.thick {
+#pxeaxnmrld .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#pwnryqvzhs .gt_last_summary_row {
+#pxeaxnmrld .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2370,7 +2194,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_grand_summary_row {
+#pxeaxnmrld .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2379,7 +2203,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pwnryqvzhs .gt_first_grand_summary_row {
+#pxeaxnmrld .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2388,7 +2212,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_last_grand_summary_row_top {
+#pxeaxnmrld .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2397,10 +2221,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_striped {
+#pxeaxnmrld .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#pwnryqvzhs .gt_table_body {
+#pxeaxnmrld .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2408,7 +2232,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_footnotes {
+#pxeaxnmrld .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2421,7 +2245,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_footnote {
+#pxeaxnmrld .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2429,7 +2253,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pwnryqvzhs .gt_sourcenotes {
+#pxeaxnmrld .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2442,64 +2266,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#pwnryqvzhs .gt_sourcenote {
+#pxeaxnmrld .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pwnryqvzhs .gt_left {
+#pxeaxnmrld .gt_left {
 text-align: left;
 }
-#pwnryqvzhs .gt_center {
+#pxeaxnmrld .gt_center {
 text-align: center;
 }
-#pwnryqvzhs .gt_right {
+#pxeaxnmrld .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#pwnryqvzhs .gt_font_normal {
+#pxeaxnmrld .gt_font_normal {
 font-weight: normal;
 }
-#pwnryqvzhs .gt_font_bold {
+#pxeaxnmrld .gt_font_bold {
 font-weight: bold;
 }
-#pwnryqvzhs .gt_font_italic {
+#pxeaxnmrld .gt_font_italic {
 font-style: italic;
 }
-#pwnryqvzhs .gt_super {
+#pxeaxnmrld .gt_super {
 font-size: 65%;
 }
-#pwnryqvzhs .gt_footnote_marks {
+#pxeaxnmrld .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#pwnryqvzhs .gt_asterisk {
+#pxeaxnmrld .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#pwnryqvzhs .gt_indent_1 {
+#pxeaxnmrld .gt_indent_1 {
 text-indent: 5px;
 }
-#pwnryqvzhs .gt_indent_2 {
+#pxeaxnmrld .gt_indent_2 {
 text-indent: 10px;
 }
-#pwnryqvzhs .gt_indent_3 {
+#pxeaxnmrld .gt_indent_3 {
 text-indent: 15px;
 }
-#pwnryqvzhs .gt_indent_4 {
+#pxeaxnmrld .gt_indent_4 {
 text-indent: 20px;
 }
-#pwnryqvzhs .gt_indent_5 {
+#pxeaxnmrld .gt_indent_5 {
 text-indent: 25px;
 }
-#pwnryqvzhs .katex-display {
+#pxeaxnmrld .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#pwnryqvzhs div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#pxeaxnmrld div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
